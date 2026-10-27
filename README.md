@@ -11,9 +11,14 @@ The central question: **Which kinds of continuity can be demonstrated experiment
 ## Status
 
 - **Phase 1 (Discovery & Audit):** COMPLETE
-- **Phase 2 (Research Gap Analysis):** COMPLETE  
-- **Phase 3 (Experimental Design - CE-2):** IN PROGRESS
-- **Phase 4+:** Pending
+- **Phase 2 (Research Gap Analysis):** COMPLETE
+- **Phase 3 (Experimental Design - CE-2):** COMPLETE (proposed, not frozen)
+- **Phase 4 (Core Implementation):** COMPLETE
+- **Phase 5 (Exploratory Validation):** IN PROGRESS (red-team findings being addressed)
+- **Phase 6 (Freeze Protocol):** CANDIDATE created (not frozen)
+- **Phase 7 (Confirmatory Experiments):** Pending (blocked on protocol freeze + LLM availability)
+- **Phase 8 (Independent Analysis & Red Team):** IN PROGRESS
+- **Phase 9 (Final Package):** IN PROGRESS
 
 ## Project Location
 
@@ -61,4 +66,12 @@ cd C:\Users\natha\projects\sapphire-continuity-research
 - `AUDIT_REPORT.md` - Phase 1 findings
 - `RESEARCH_GAP_ANALYSIS.md` - Phase 2 analysis
 - `PREREGISTRATION_CE2.md` - Proposed CE-2 protocol (not frozen)
+- `PREREGISTRATION_CE2_FROZEN.md` - Protocol candidate with hash (NOT frozen)
+- `METHODS.md` - Experiment methods
+- `DATA_DICTIONARY.md` - Scenario/result/metric schemas
+- `EVIDENCE_LEDGER.md` - Claim-to-artifact mapping
+- `RED_TEAM_REPORT.md` - Adversarial findings
+- `REPRODUCIBILITY.md` - Setup, run, and verification commands
+- `CHANGELOG.md` - Modification history
+- `LIMITATIONS.md` - Known limitations
 - `AUDIT_BASELINE.json` - Repository baseline

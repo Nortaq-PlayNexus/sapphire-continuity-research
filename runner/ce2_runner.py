@@ -127,7 +127,13 @@ class CE2Runner:
             for adapter_name in adapters_to_use:
                 adapter = self.registry.get(adapter_name)
                 if adapter and adapter_name == "episodic_store":
-                    adapter.setup({"episodes": scenario["episodes"] + (scenario.get("decoy_episodes", []) if "decoy" in condition_name else [])})
+                    # Decoys are included whenever the episodic store is in use,
+                    # so the experiment can measure whether the store prefers the
+                    # target over a near-duplicate (the content-specificity test).
+                    # Previously the gate was "decoy" in condition_name, which
+                    # matched none of the condition names, so decoys were never
+                    # tested at all.
+                    adapter.setup({"episodes": scenario["episodes"] + scenario.get("decoy_episodes", [])})
                 elif adapter and adapter_name == "transcript":
                     if "transcript" in condition_name or condition_name in ["C1", "C3"]:
                         adapter.setup(scenario)

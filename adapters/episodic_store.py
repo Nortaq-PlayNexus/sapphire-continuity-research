@@ -28,17 +28,55 @@ class EpisodicStoreAdapter(PersistenceAdapter):
         super().__init__("episodic_store")
         if persist_dir is None:
             persist_dir = f"C:/tmp/ce2_episodic_{id(self)}"
-        self.persist_dir = Path(persist_dir)
+        # Keep a stable base so get_state/load_state remain meaningful, but
+        # every setup() gets a UNIQUE subdirectory: ChromaDB keeps file locks
+        # on its SQLite store, so reusing one directory across setups leaves
+        # stale episodes behind (cross-scenario contamination).
+        self._base_dir = Path(persist_dir)
+        self._run_counter = 0
+        self.persist_dir = self._base_dir
         self.memory = None
         self.stored_episodes = []
     
+    def _clean_persist_dir(self):
+        """Best-effort removal of a previous store (Windows file locks make
+        rmtree unreliable on the first attempt)."""
+        import shutil
+        import time as _t
+        if not self.persist_dir.exists():
+            return
+        for _ in range(5):
+            try:
+                shutil.rmtree(self.persist_dir)
+                return
+            except OSError:
+                _t.sleep(0.3)
+        # Fall back to deleting just the chroma subdir contents
+        try:
+            for child in self.persist_dir.iterdir():
+                if child.is_dir():
+                    shutil.rmtree(child, ignore_errors=True)
+                else:
+                    child.unlink(missing_ok=True)
+        except Exception:
+            pass
+
     def setup(self, scenario_data: Dict[str, Any]) -> bool:
         if not EPISODIC_AVAILABLE:
             return False
-        
+
+        # Reset the store so a previous scenario's episodes cannot leak in.
+        # Use a unique subdirectory per setup: ChromaDB holds file locks on
+        # its SQLite store, so reusing one directory leaves stale episodes
+        # behind (cross-scenario contamination).
+        self._run_counter += 1
+        self.persist_dir = self._base_dir / ("run_%d" % self._run_counter)
+        self._clean_persist_dir()
+        self.persist_dir.mkdir(parents=True, exist_ok=True)
+        self.stored_episodes = []
+
         try:
             self.memory = EpisodicMemory(persist_dir=str(self.persist_dir))
-            # Store relevant episodes from scenario
             if "episodes" in scenario_data:
                 for ep_data in scenario_data["episodes"]:
                     ep = Episode(
@@ -79,14 +117,10 @@ class EpisodicStoreAdapter(PersistenceAdapter):
             return []
     
     def teardown(self) -> bool:
-        try:
-            # Optionally clean up
-            import shutil
-            if self.persist_dir.exists():
-                shutil.rmtree(self.persist_dir)
-            return True
-        except:
-            return False
+        self.memory = None
+        self._clean_persist_dir()
+        self.stored_episodes = []
+        return True
     
     def get_state(self) -> Dict[str, Any]:
         return {
