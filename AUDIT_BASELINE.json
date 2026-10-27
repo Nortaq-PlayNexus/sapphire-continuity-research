@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-27T16:04:51.479717",
+  "repos_audited": [
+    {
+      "path": "C:/Users/natha/projects/ce-1-continuous-existence",
+      "commit": "fd14fac H8: second-model replication with dolphin-llama3 - REPLICATED",
+      "branch": "master",
+      "dirty": false
+    },
+    {
+      "path": "C:/Users/natha/projects/episodic-memory",
+      "commit": "ddf1f1d Episodic memory: continuity_v2 benchmark - retrieval half through the real store",
+      "branch": "master",
+      "dirty": false
+    },
+    {
+      "path": "C:/Users/natha/ScientificDiscoveryLab",
+      "commit": "022fb28 tools/arkini: record verified single-file publish + exit-code verification note",
+      "branch": "master",
+      "dirty": true
+    }
+  ]
+}
